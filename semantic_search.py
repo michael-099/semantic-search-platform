@@ -96,7 +96,7 @@ for i in tqdm(range(0, min(len(all_records_to_upsert), vector_limit), batch_size
 print(index.describe_index_stats())
 
 # Query function
-def query_pinecone(index, query_text, top_k=5):
+def query_pinecone(index, query_text, top_k=3):
     query_vector = embed(query_text, model, device).tolist()
     results = index.query(vector=query_vector, top_k=top_k, include_metadata=True)
 
