@@ -2,17 +2,14 @@ from extract_text import *
 from sentence_transformers import SentenceTransformer
 
 
-def embed(extracted_texts):
+def embed(text, model, device):
+    # Ensure the model is on the right device (GPU if available)
+    model = model.to(device)
+    
+    # Get the sentence embedding
+    embeddings = model.encode([text], device=device)
+    
+    return embeddings[0]  # Return the embedding for the single text
 
-    # the pre trained model 
-    model_name = 'all-mpnet-base-v2' 
-    # loading the pretrained model 
-    model = SentenceTransformer(model_name)
-    
-    # dimension = model.get_sentence_embedding_dimension(),
-    # encoding to high dimensional vector 
-    embedding = model.encode(extracted_texts , convert_to_numpy = True)
-    
-    return embedding
 
 
