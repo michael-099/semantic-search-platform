@@ -14,7 +14,7 @@ stop_words = set(stopwords.words('english'))
 #              -> Contains complete sentences (not mid-sentence cuts),
 #              -> Has a maximum number of words (default: 150),
 
-def chunk_text(text, max_words=150):
+def chunk_text(text,page,max_words=100):
     sentences = sent_tokenize(text)
     chunks = []
     current_chunk = []
@@ -33,14 +33,30 @@ def chunk_text(text, max_words=150):
     if current_chunk:
         chunks.append(" ".join(current_chunk))
     
-    return chunks
+    return (page,chunks)
 
 
-def chunk_documents(text , max_words=150):
-    chunked_documents=[]
-    for doc in text:
-        chunked_documents.append(chunk_text(doc,max_words))
-    return chunk_documents
+def chunk_documents(document, max_words=100):
+    chunked_corpus=[]
+    
+    for doc in document:
+        chunked_documents=[]
+        for page in doc:
+            page_num , content = page
+            chunked_documents.append(chunk_text(content,page_num,max_words))
+        chunked_corpus.append(chunked_documents)
+    return chunked_corpus
+        
+    
+
+    
+    
+    # for page_num, content in data:
+    #     page, chunks = chunk_text(content, page_num, max_words)
+    #     for chunk in chunks:
+    #         chunked_documents.append((page, chunk))  # each chunk keeps its page number
+    # return chunked_documents
+
 
 
 # def clean_text(text):

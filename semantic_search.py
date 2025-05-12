@@ -8,14 +8,34 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 
-from pinecone import Pinecone, ServerlessSpec  #  Vector Database
+from pinecone import Pinecone
+from pinecone.core.client.models import ServerlessSpec
 
-import DLAIUtils
-from DLAIUtils import Utils
+# import DLAIUtils
+# from DLAIUtils import Utils
 
 from embedding import *
 from extract_text import *
 from document_preprocessing import *
+
+
+def save_output_to_file(output, filename="output.txt"):
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            if isinstance(output, list):
+                for item in output:
+                    f.write(str(item) + "\n\n")
+            else:
+                f.write(str(output))
+        print(f" Output saved to {filename}")
+    except Exception as e:
+        print(f" Error saving to file: {e}")
+
+
+def get_list_dimensions(arr):
+    if isinstance(arr, list):
+        return [len(arr)] + get_list_dimensions(arr[0]) if arr else [0]
+    return []
 
 
 files = [
@@ -26,9 +46,16 @@ files = [
 
 
 documents = extract_text(files)
-chunked_documents = chunk_documents(documents)
 
-embeddings = embed(documents)
+chunked_documents = chunk_documents(documents)
+save_output_to_file(chunked_documents[1])
+
+# print(len(chunked_documents),len(chunked_documents[1]))
+# print(len(chunked_documents),len(chunked_documents[1]),len(chunked_documents[1][1]))
+# print(len(chunked_documents),len(chunked_documents[1]),len(chunked_documents[1][1]),len(chunked_documents[1][40][1]),len(chunked_documents[1][40][1][1].split()))
+
+
+# embeddings = embed(documents)
 
 prompt = "importance of fairness in NLP"
 embedded_prompt = embed(prompt)
@@ -41,9 +68,12 @@ pc = Pinecone(
 index_name = "semantic_search_vdb"
 pc.create_index(
     name=index_name,
-    # dimension=model.get_sentence_embedding_dimension(),
+    dimension=768,
     metric="cosine",
-    spec=ServerlessSpec(cloud="aws", region="us-west-2"),
+    spec=ServerlessSpec(
+        cloud="aws",
+        region="us-west-2",
+    ),
 )
 
 index = pc.Index(index_name)
