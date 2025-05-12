@@ -1,13 +1,25 @@
 from extract_text import *
-
+from sentence_transformers import SentenceTransformer
 
 
 def extract(files):
-    text=""
+    documents = []  
     for file in files:
-        text= text + extract_text_from_file(file)
-    return text
+        text = extract_text_from_file(file)
+        if text:  
+            documents.append(text)
+    return documents
+
+def embed(files):
+    extracted_texts = extract(files)
+
+    # the pre trained model 
+    model_name = 'all-mpnet-base-v2' 
+    # loading the pretrained model 
+    model = SentenceTransformer(model_name)
+    # encoding to high dimensional vector 
+    embedding = model.encode(extracted_texts)
     
-files=["files/Bias and Fairness in Large Language Models.pdf","files/Fairness Certification for Natural Language.pdf","files/Fairness in Language Models Beyond English Gaps and Challenges.pdf"]
-print(extract(files)[-5])
+    return embedding
+
 

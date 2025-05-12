@@ -7,7 +7,7 @@ import fitz
 def extract_text_from_file(file_path):
     _, extension = os.path.splitext(file_path)
     extension = extension.lower()
-
+    # text from .txt file 
     if extension == ".txt":
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -15,6 +15,7 @@ def extract_text_from_file(file_path):
         except Exception as e:
             print(f"Error reading .txt file: {e}")
             return None
+    # text form .pdf file
     elif extension == ".pdf":
         try:
             text = ""
@@ -25,7 +26,7 @@ def extract_text_from_file(file_path):
         except Exception as e:
             print(f"Error reading .pdf file with PyMuPDF: {e}")
             return None
-    
+    # text from .docx file 
     elif extension == ".docx":
         try:
             doc = Document(file_path)
@@ -36,6 +37,7 @@ def extract_text_from_file(file_path):
         except Exception as e:
             print(f"Error reading .docx file: {e}")
             return None
+    # text from .csv file 
     elif extension == ".csv":
         try:
             all_text = []
