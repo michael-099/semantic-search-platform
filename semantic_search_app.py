@@ -10,9 +10,13 @@ PINECONE_REGION = "us-east-1"
 EMBEDDING_MODEL_NAME = 'all-mpnet-base-v2'
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index(PINECONE_INDEX_NAME)
+
+
 # Load the model
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = SentenceTransformer(EMBEDDING_MODEL_NAME).to(device)
+model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+
+
 # Streamlit app
 st.title("Semantic Search Application")
 # Query input
